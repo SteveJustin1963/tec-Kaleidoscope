@@ -81,6 +81,8 @@ The beauty of this implementation is how it demonstrates creating complex, symme
 # MINT
 
 ```
+// warning DNW! 
+
 // Kaleidoscope Generator in MINT
 
 // Initialize Constants
