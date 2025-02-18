@@ -96,19 +96,21 @@ The beauty of this implementation is how it demonstrates creating complex, symme
 ;
 
 // Initialize grid with spaces
+ 
 :I  
-  h ( w ( 32 g j i ! ) )
+  h ( w ( 32 g j i ! ) ) // will not work
 ;
 
 // Draw symbol at (x,y)
+
 :D   
-  s g i j !
+  s g i j ! // will not work
 ;
 
 // Initialize base pattern
 :P
   // Place initial shape at center
-  x y D
+  x y D   // will not work
 ;
 
 // Reflect across X-axis
