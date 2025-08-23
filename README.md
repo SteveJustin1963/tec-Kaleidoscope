@@ -10,7 +10,7 @@ Making galaxies run,
 In patterns so wild and unbound!
 ```
 
-full of errors!!!! punch ur n@@ts! 
+ 
 
 
 Kaleidoscope Generator concept and how it works in MINT:
