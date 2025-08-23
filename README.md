@@ -163,3 +163,33 @@ P   // Set base pattern
 R   // Apply reflections
 O   // Display result
 ```
+
+
+23-8-25
+
+```
+:K 40 w! 20 h! 20 x! 10 y! ;
+
+:Q `DBG  w:` w . ` h:` h . `  x:` x . ` y:` y . /N ;
+
+:O
+  h(
+    w(
+      /i x = a!  /j y = b!   a b & c!
+      w 1 - x - d!  /i d = e!  /j y = f!  e f & g!
+      h 1 - y - m!  /i x = n!  /j m = o!  n o & p!
+      /i d = r!  /j m = s!  r s & t!
+
+      c (`*`) /E
+      ( g (`X`) /E
+      ( p (`Y`) /E
+      ( t (`M`) /E
+      ( 46 /C ) ) ) )
+    )
+    /N
+  ) ;
+
+:S K Q O ;
+
+S
+```
