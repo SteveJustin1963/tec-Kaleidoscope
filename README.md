@@ -237,3 +237,159 @@ shows
 >
 ```
 
+Alright — here’s the full program **with comments placed above each definition**, so you can read line by line what’s happening.
+
+---
+
+```mint
+\ Initialize constants: grid width=40, height=20, center (x=20,y=10), seed z=7
+:K 40 w !  20 h !  20 x !  10 y !  7 z ! ;
+
+\ Compute offset k = z + 1 (used later for parallel lines)
+:T z 1 + k ! ;
+
+\ Seed test: true only when i==x AND j==y → stored in c
+:A i x =  j y =  &  c ! ;
+
+\ "/" diagonal test: true when (i−j) == (x−y) → stored in f
+:B i j - d !  x y - e !  d e = f ! ;
+
+\ "\" diagonal test: true when (i+j) == (x+y) → stored in l
+:C i j + g !  x y + h !  g h = l ! ;
+
+\ "\" offset parallels: true when (i+j) == (x+y)±k → stored in m,n
+:D h k + p !  h k - o !  g p = m !  g o = n ! ;
+
+\ "/" offset parallels: true when (i−j) == (x−y)±k → stored in u,v
+:F e k + s !  e k - t !  d s = u !  d t = v ! ;
+
+\ Printer: priority ladder
+\ If c then "*" else if f then "/" else if l then "\" else "."
+:E c (42 /C) /E ( f (47 /C) /E ( l (92 /C) /E (46 /C) ) ) ;
+
+\ Main draw loop
+\ j=0..h−1, i=0..w−1
+\ For each cell: run A,B,C,E and print
+\ After row: newline
+:O 0 j !  h (  0 i !  w (  A B C E  i 1 + i !  )  /N  j 1 + j !  ) ;
+
+\ Entry point: initialize then draw
+:V K O ;
+```
+
+---
+
+👉 Right now, note that **E ignores D and F** (offset lines). That’s why you only see `/` `\` and the seed `*`.
+Do you want me to extend `E` so it will also check `m,n,u,v` (offsets) and print `*` or `x` for those too?
+
+Flowchart = a step-by-step diagram of the program’s control flow and key decisions.
+
+# Top-level flow (what runs, in order)
+
+```
+[ V ]
+  |
+  v
+[ K ]  set w,h,x,y,z
+  |
+  v
+[ O ]  double loop over rows/cols and print frame
+```
+
+# Frame rendering inside O (row/col loops)
+
+```
+          ┌──────────────┐
+          │  j := 0      │
+          └─────┬────────┘
+                │  repeat h times
+                v
+        ┌──────────────┐
+        │  i := 0      │
+        └─────┬────────┘
+              │  repeat w times
+              v
+        ┌──────────────┐
+        │  A: seed?    │  c := (i==x) AND (j==y)
+        └─────┬────────┘
+              v
+        ┌──────────────┐
+        │  B: "/" ?    │  f := (i−j) == (x−y)
+        └─────┬────────┘
+              v
+        ┌──────────────┐
+        │  C: "\" ?    │  l := (i+j) == (x+y)
+        └─────┬────────┘
+              v
+        ┌──────────────┐
+        │  E: print    │  if c→'*' else if f→'/' else if l→'\' else '.'
+        └─────┬────────┘
+              v
+        ┌──────────────┐
+        │  i := i+1    │  next column
+        └─────┬────────┘
+              │  (loop w times)
+              v
+        ┌──────────────┐
+        │   /N         │  newline at end of row
+        └─────┬────────┘
+              v
+        ┌──────────────┐
+        │  j := j+1    │  next row
+        └─────┬────────┘
+              │  (loop h times)
+              v
+            [ done ]
+```
+
+# Data computed at each cell
+
+* `c` = (i==x) AND (j==y)  → seed hit.
+* `f` = (i−j) == (x−y)     → “/” diagonal through seed.
+* `l` = (i+j) == (x+y)     → “\” diagonal through seed.
+
+# Where each code word fits
+
+* `K` sets `w h x y z`.
+* `O` runs the loops, manages `i j`, and calls `A B C E`.
+* `A` sets `c`.
+* `B` sets `f`.
+* `C` sets `l`.
+* `E` prints one glyph per cell using the priority ladder.
+
+Two small instances:
+
+* With `x=20,y=10`, at `(i,j)=(20,10)` → `c` true → `E` prints `*`.
+* With `x=20,y=10`, at `(i,j)=(23,13)` → `i−j = 10`, `x−y = 10` → `f` true → `E` prints `/`.
+
+Good question. The part that **actually generates the visible image** is the **print ladder function** (`:E`) called inside the nested loops (`:O`).
+
+Here’s the breakdown:
+
+* **`:O`** is the *engine*:
+  It loops over every row (`j=0..h−1`) and every column (`i=0..w−1`).
+  For each `(i,j)`, it calls the test functions (`A`, `B`, `C`) to set flags, then calls **`:E`** to decide what to print.
+  After finishing each row, it issues `/N` (newline).
+
+* **`:E`** is the *painter*:
+
+  ```
+  :E c (42 /C) /E ( f (47 /C) /E ( l (92 /C) /E (46 /C) ) ) ;
+  ```
+
+  * If `c` is true, print `*` (ASCII 42).
+  * Else if `f` is true, print `/` (47).
+  * Else if `l` is true, print `\` (92).
+  * Else print `.` (46).
+
+So the **image you see on the screen** is generated by `:E` printing one character per cell, and `:O` repeating that for every `(i,j)` coordinate in the grid.
+
+---
+
+👉 Put simply:
+
+* `A`, `B`, `C` → calculate conditions (seed hit, `/` diag, `\` diag).
+* `E` → *renders* one character based on those conditions.
+* `O` → scans the whole grid and calls `E` at each position.
+
+Would you like me to extend the printer `:E` so it also uses the extra flags (`m,n,u,v` from `:D` and `:F`) so the kaleidoscope offsets show up too?
