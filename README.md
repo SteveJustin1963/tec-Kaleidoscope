@@ -1,5 +1,27 @@
 # tec-Kaleidoscope
 
+# tec-Kaleidoscope
+
+## Table of Contents
+- [Conceptual Overview](#conceptual-overview)
+- [Key Principles](#key-principles)
+- [Functional Breakdown](#functional-breakdown)
+  - [1. Initialization](#1-initialization)
+  - [2. Base Pattern](#2-base-pattern)
+  - [3. Reflection Mechanisms](#3-reflection-mechanisms)
+  - [4. Pattern Generation](#4-pattern-generation)
+  - [5. Rendering](#5-rendering)
+- [Unique Characteristics of the MINT Implementation](#unique-characteristics-of-the-mint-implementation)
+- [Potential Variations](#potential-variations)
+- [Limitations](#limitations)
+- [MINT](#mint)
+
+![image](https://github.com/user-attachments/assets/1d9129f1-e215-4216-bccb-49af61c1bdaf)
+
+
+
+
+
 ![image](https://github.com/user-attachments/assets/1d9129f1-e215-4216-bccb-49af61c1bdaf)
 
 ```
