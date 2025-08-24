@@ -193,3 +193,19 @@ O   // Display result
 
 S
 ```
+
+
+```
+:A i x =  j y =  &  c ! ;
+:B i j - d !  x y - e !  d e = f ! ;
+:C i j + g !  x y + h !  g h = l ! ;
+:D h k + p !  h k - o !  g p = m !  g o = n ! ;
+:E c (42 /C) /E ( f (47 /C) /E ( l (92 /C) /E (46 /C) ) ) ;
+:F e k + s !  e k - t !  d s = u !  d t = v ! ;
+:K 40 w !  20 h !  20 x !  10 y !  7 z ! ;
+:O 0 j !  h (  0 i !  w (  A B C E  i 1 + i !  )  /N  j 1 + j !  ) ;
+:T z 1 + k ! ;
+:V K O ;
+
+ V
+```
