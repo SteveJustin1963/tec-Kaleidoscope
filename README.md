@@ -1,6 +1,6 @@
 # tec-Kaleidoscope
 
-# tec-Kaleidoscope
+ 
 
 ## Table of Contents
 - [Conceptual Overview](#conceptual-overview)
@@ -22,7 +22,7 @@
 
 
 
-![image](https://github.com/user-attachments/assets/1d9129f1-e215-4216-bccb-49af61c1bdaf)
+ 
 
 ```
 There once was a scope, quite profound,  
