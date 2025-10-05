@@ -412,3 +412,108 @@ It's a testament to creative programming in resource-limited environments—the 
 **Date: 2025-10-05**
 
 *Try different seeds. Share your favorites. Modify the code. Make it yours!*
+
+```
+:A
+  `Seed (0-9): ` 
+  /K 48 - s !
+  s 1 + s !
+  66 w !
+  26 h !
+  w 2 / x !
+  h 2 / y !
+  8 n !
+  360 n / a !
+  `Generating...` /N /N
+;
+
+:B
+  s 37 * 17 + 1000 /mod s !
+;
+
+:C
+  /i x - u !
+  /j y - v !
+  u u * v v * + /sqrt d !
+  v u /atan2 /deg t !
+  t 0 < ( t 360 + t ! )
+  t a /mod m !
+  m 2 / /floor 2 * m = ( m ) /E ( a m - ) m !
+;
+
+:D
+  d /floor p !
+  m /floor q !
+  p 7 * q 11 * + s + 100 /mod r !
+;
+
+:E
+  D
+  r 15 < ( d 3 /mod 0 = ( 42 /C ) /E ( 43 /C ) ) /E (
+  r 30 < ( d 4 /mod 0 = ( 35 /C ) /E ( 111 /C ) ) /E (
+  r 50 < ( d 5 /mod 0 = ( 64 /C ) /E ( 79 /C ) ) /E (
+  r 70 < ( d 2 /mod 0 = ( 61 /C ) /E ( 45 /C ) ) /E (
+  d 6 /mod 0 = ( 46 /C ) /E ( 32 /C ) ) ) ) )
+;
+
+:F
+  C E
+;
+
+:G
+  0 j !
+  h (
+    0 i !
+    w ( F i 1 + i ! )
+    /N
+    j 1 + j !
+  )
+;
+
+:H
+  A G
+  /N `Run H for new!` /N
+;
+
+H
+
+```
+
+
+```
+> H
+Seed (0-9): 1
+Generating...
+
++  -OO++ -OO+  -o  -o -o O+-o o O O O Oo -o -Oo   -OOo+++
+o+  -OOo+ --Oo  O@+ O+ O*-o O O O.o o O Oo -O+ --@o++     --------
+oo+  -OOo+ --O+  Oo -O+-o O - O O +- -+-o -o+ -Oo+   ----OOOOOOOOO
+OOo+  -OOo+  -O+ -Oo -o+O+-+-+O o +O o O -o+-Oo+  --OOOOOoooo+oo+o
+--Oo++ --Oo+ --Oo  Oo -o O O o- O- o- O -o Oo* --OOoo++++  +    +
+ --OOo+  -OOo+ -Oo  -o -o o=oO +O=- o- =+ O+ -OOo++
+   -Ooo+   -Oo+  -o+ Oo -+-+O +oO-O  o-+-o -Oo+    -----O-OOO-O---
+++  --OOo+  --O++ -Oo -O =+- +OOOOoOO +-+=O+  --OOOooo+ooooooOoOoO
+oo+   --OOo+  -Oo+  OO+ O -+-----@+  +- Oo --Oo+++          ++++o+
+-Ooo+   --OOo+  -OOo  -o -o +O@o O-ooO-+ Oo+   -----------       +
+--OOOo++   -OOO+   -Oo  -o O oO oo+OO@-O+ -OOOoOooOooOOOOOO-----
+   --OOoo++   -OOo+   -Oo  O oOo+o+o o-Oo+          + ++++ooOOOO--
++    --OOOoo++   --OOo++ -Oo+-++++++o -OOOOoOOOOOO----     ++oooOO
+O#o*+    .-=O@Ooo+*+ .  -=-O@Ooo+*+ooO@O-=-  . +*+ooO@O=-.    +*o#
+OOOooo++     ----OOOOOOoOOOO- o++++++-+oO- ++oOO--   ++ooOOO--
+---OOOOoo++++ +          +oO-o o+o+oOo O  oO-   +oOO-   ++ooOO--
+   -----OOOOOOooOooOoOOO- +O-@OO+oo Oo O o-  oO-   +OOO-   ++oOOO-
+ +       -----------   +oO +-Ooo-O o@O+ o- o-  oOO-  +oOO--   +ooO
+o+o++++          +++oO-- oO -+  +@-----+- O +OO  +oO-  +oOO--   +o
+OOoOoOoooooo+oooOOO--  +O=+-+ OOoOOOO+ -+= O- oO- ++O--  +oOO--  +
+----O-OOO-O-----    +oO- o-+-o  O-Oo+ O+-+- oO +o-  +oO-   +ooO-
+                ++oOO- +O += -o -=O+ Oo=o o- o-  oO- +oOO-  +oOO--
++ +    +  ++++ooOO-- *oO o- O -o -O -o O O o- oO  oO-- +oO-- ++oO-
+oo+oo+ooooOOOOO--  +oO-+o- O o O+ o O+-+-+O+o- oO- +O-  +oOO-  +oO
+OOOOOOOOOO----   +oO- +o- o-+- -+ O O - O o-+O- oO  +O-- +oOO-  +o
+---------     ++o@-- +O- oO O o o.O O O o-*O +O +@O  oO-- +oOO-  +
+
+Run H for new!
+
+>
+```
+
