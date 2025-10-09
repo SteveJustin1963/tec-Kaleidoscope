@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ASCII Kaleidoscope</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background: #000;
+            font-family: 'Courier New', monospace;
+            cursor: crosshair;
+        }
+        #ascii-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, 12px);
+            grid-auto-rows: 18px;
+            color: #00ff00;
+            font-size: 14px;
+            line-height: 18px;
+            letter-spacing: 2px;
+        }
+        .ascii-char {
+            display: inline-block;
+            text-align: center;
+            transition: color 0.3s;
+        }
+        #info {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            color: #0f0;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 10px;
+            border: 1px solid #0f0;
+            font-size: 11px;
+            z-index: 1000;
+        }
+    </style>
+</head>
+<body>
+    <div id="ascii-container"></div>
+    <div id="info">
+        X: <span id="mouseX">0</span> | Y: <span id="mouseY">0</span><br>
+        Status: <span id="status">IDLE</span><br>
+        Chars: <span id="charSet">█▓▒░</span>
+    </div>
+
+    <script>
+        const container = document.getElementById('ascii-container');
+        const statusEl = document.getElementById('status');
+        const charSetEl = document.getElementById('charSet');
+        
+        let cols, rows;
+        let grid = [];
+        let mouseX = 0, mouseY = 0;
+        let lastMouseX = 0, lastMouseY = 0;
+        let isMoving = false;
+        let moveTimeout;
+        let currentCharSet = 0;
+        
+        // Different ASCII character sets
+        const charSets = [
+            ['█', '▓', '▒', '░', '·'],
+            ['@', '#', '*', '+', '-', '.'],
+            ['◆', '◇', '○', '●', '◎', '◉'],
+            ['▀', '▄', '▌', '▐', '█', '░'],
+            ['≈', '∼', '~', '-', '=', '≡'],
+            ['╔', '╗', '╚', '╝', '║', '═'],
+            ['♠', '♣', '♥', '♦', '♪', '♫'],
+            ['Ω', 'Σ', 'Π', 'Φ', 'Ψ', 'Δ'],
+            ['$', '€', '£', '¥', '¢', '₹'],
+            ['▲', '▼', '◄', '►', '♦', '■']
+        ];
+        
+        function calculateGrid() {
+            cols = Math.floor(window.innerWidth / 12);
+            rows = Math.floor(window.innerHeight / 18);
+            
+            container.innerHTML = '';
+            grid = [];
+            
+            for (let y = 0; y < rows; y++) {
+                grid[y] = [];
+                for (let x = 0; x < cols; x++) {
+                    const char = document.createElement('span');
+                    char.className = 'ascii-char';
+                    char.textContent = ' ';
+                    container.appendChild(char);
+                    grid[y][x] = char;
+                }
+            }
+        }
+        
+        function getRandomChar() {
+            // Randomly pick from ANY character set
+            const randomSet = charSets[Math.floor(Math.random() * charSets.length)];
+            return randomSet[Math.floor(Math.random() * randomSet.length)];
+        }
+        
+        function getColorForSegment(segment, segments) {
+            const hue = (segment / segments) * 360 + (mouseX / window.innerWidth) * 180;
+            const sat = 70 + (mouseY / window.innerHeight) * 30;
+            const light = 40 + Math.random() * 30;
+            return `hsl(${hue}, ${sat}%, ${light}%)`;
+        }
+        
+        function generateKaleidoscope() {
+            if (!isMoving) return;
+            
+            const centerX = Math.floor(cols / 2);
+            const centerY = Math.floor(rows / 2);
+            
+            // Calculate mouse-influenced parameters
+            const segments = Math.floor(4 + (mouseY / window.innerHeight) * 12);
+            const radius = Math.floor(8 + (mouseX / window.innerWidth) * 20);
+            const density = 0.3 + (mouseX / window.innerWidth) * 0.5;
+            
+            // Clear grid occasionally
+            if (Math.random() > 0.92) {
+                for (let y = 0; y < rows; y++) {
+                    for (let x = 0; x < cols; x++) {
+                        if (Math.random() > 0.7) {
+                            grid[y][x].textContent = ' ';
+                        }
+                    }
+                }
+            }
+            
+            // Generate pattern with clear segments
+            const numPoints = Math.floor(15 + density * 40);
+            
+            for (let i = 0; i < numPoints; i++) {
+                const r = Math.random() * radius;
+                const angle = Math.random() * (Math.PI * 2 / segments); // Only in one segment
+                const baseX = Math.floor(centerX + Math.cos(angle) * r);
+                const baseY = Math.floor(centerY + Math.sin(angle) * r);
+                
+                // Mirror across all segments
+                for (let seg = 0; seg < segments; seg++) {
+                    const segAngle = (Math.PI * 2 / segments) * seg;
+                    const segColor = getColorForSegment(seg, segments);
+                    
+                    const cos = Math.cos(segAngle);
+                    const sin = Math.sin(segAngle);
+                    
+                    const dx = baseX - centerX;
+                    const dy = baseY - centerY;
+                    
+                    const rotX = dx * cos - dy * sin;
+                    const rotY = dx * sin + dy * cos;
+                    
+                    const finalX = Math.floor(centerX + rotX);
+                    const finalY = Math.floor(centerY + rotY);
+                    
+                    if (finalX >= 0 && finalX < cols && finalY >= 0 && finalY < rows) {
+                        grid[finalY][finalX].textContent = getRandomChar();
+                        grid[finalY][finalX].style.color = segColor;
+                    }
+                }
+            }
+            
+            // Draw segment boundaries
+            drawSegmentLines(centerX, centerY, segments, radius + 5);
+        }
+        
+        function drawSegmentLines(cx, cy, segments, radius) {
+            for (let seg = 0; seg < segments; seg++) {
+                const angle = (Math.PI * 2 / segments) * seg;
+                const segColor = getColorForSegment(seg, segments);
+                
+                for (let r = 0; r < radius; r += 0.5) {
+                    const x = Math.floor(cx + Math.cos(angle) * r);
+                    const y = Math.floor(cy + Math.sin(angle) * r);
+                    
+                    if (x >= 0 && x < cols && y >= 0 && y < rows) {
+                        if (Math.random() > 0.7) {
+                            grid[y][x].textContent = '│';
+                            grid[y][x].style.color = segColor;
+                        }
+                    }
+                }
+            }
+        }
+        
+        function renderFinalPattern() {
+            statusEl.textContent = 'RENDERING...';
+            statusEl.style.color = '#ff0';
+            
+            const centerX = Math.floor(cols / 2);
+            const centerY = Math.floor(rows / 2);
+            const segments = Math.floor(4 + (mouseY / window.innerHeight) * 12);
+            const maxRadius = Math.min(cols, rows) / 2;
+            
+            // Fill each segment individually
+            for (let seg = 0; seg < segments; seg++) {
+                const segmentColor = getColorForSegment(seg, segments);
+                const startAngle = (Math.PI * 2 / segments) * seg;
+                const endAngle = (Math.PI * 2 / segments) * (seg + 1);
+                
+                for (let y = 0; y < rows; y++) {
+                    for (let x = 0; x < cols; x++) {
+                        const dx = x - centerX;
+                        const dy = y - centerY;
+                        const dist = Math.sqrt(dx * dx + dy * dy);
+                        let angle = Math.atan2(dy, dx);
+                        
+                        // Normalize angle to 0-2π
+                        if (angle < 0) angle += Math.PI * 2;
+                        
+                        // Check if point is in current segment
+                        if (angle >= startAngle && angle < endAngle && dist < maxRadius) {
+                            const distFactor = dist / maxRadius;
+                            
+                            if (Math.random() < (1 - distFactor * 0.7) * 0.4) {
+                                grid[y][x].textContent = getRandomChar();
+                                grid[y][x].style.color = segmentColor;
+                            }
+                        }
+                    }
+                }
+                
+                // Draw segment boundary
+                for (let r = 0; r < maxRadius; r += 0.3) {
+                    const x = Math.floor(centerX + Math.cos(endAngle) * r);
+                    const y = Math.floor(centerY + Math.sin(endAngle) * r);
+                    
+                    if (x >= 0 && x < cols && y >= 0 && y < rows) {
+                        grid[y][x].textContent = '│';
+                        grid[y][x].style.color = segmentColor;
+                    }
+                }
+            }
+            
+            setTimeout(() => {
+                statusEl.textContent = 'COMPLETE';
+                statusEl.style.color = '#0f0';
+                setTimeout(() => {
+                    statusEl.textContent = 'IDLE';
+                }, 1000);
+            }, 500);
+        }
+        
+        let animationFrame;
+        function animate() {
+            if (isMoving) {
+                generateKaleidoscope();
+                animationFrame = requestAnimationFrame(animate);
+            }
+        }
+        
+        // Mouse tracking
+        document.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+            
+            document.getElementById('mouseX').textContent = Math.floor(mouseX);
+            document.getElementById('mouseY').textContent = Math.floor(mouseY);
+            
+            // Detect movement
+            if (Math.abs(mouseX - lastMouseX) > 2 || Math.abs(mouseY - lastMouseY) > 2) {
+                if (!isMoving) {
+                    isMoving = true;
+                    statusEl.textContent = 'ACTIVE';
+                    statusEl.style.color = '#0ff';
+                    animate();
+                }
+                
+                lastMouseX = mouseX;
+                lastMouseY = mouseY;
+                
+                clearTimeout(moveTimeout);
+                moveTimeout = setTimeout(() => {
+                    isMoving = false;
+                    cancelAnimationFrame(animationFrame);
+                    renderFinalPattern();
+                }, 300);
+            }
+        });
+        
+        // Change character set on click
+        document.addEventListener('click', () => {
+            currentCharSet = (currentCharSet + 1) % charSets.length;
+            charSetEl.textContent = charSets[currentCharSet].join('');
+        });
+        
+        // Handle window resize
+        window.addEventListener('resize', calculateGrid);
+        
+        // Initialize
+        calculateGrid();
+    </script>
+</body>
+</html>
